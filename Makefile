@@ -16,7 +16,7 @@
 #   - install - Builds the baseimage,baseos,basejvm and publishes the images to dockerhub
 #   - clean - Cleans all the docker images
 
-DOCKER_NS ?= hyperledger
+DOCKER_NS ?= themedium
 BASENAME ?= $(DOCKER_NS)/fabric
 VERSION ?= 0.4.22
 
@@ -45,7 +45,7 @@ endif
 DBUILD = docker build $(DOCKER_BUILD_FLAGS)
 
 # NOTE this is for building the dependent images (kafka, zk, couchdb)
-BASE_DOCKER_NS ?= hyperledger
+BASE_DOCKER_NS ?= themedium
 
 DOCKER_IMAGES = baseos baseimage
 DEPENDENT_IMAGES = couchdb kafka zookeeper

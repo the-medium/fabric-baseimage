@@ -32,7 +32,7 @@ export GOROOT="/opt/go"
 mkdir -p $GOPATH
 ARCH=`uname -m | sed 's|i686|386|' | sed 's|x86_64|amd64|'`
 BINTARGETS="x86_64 ppc64le s390x"
-GO_VER=1.13.12
+GO_VER=1.15
 
 # Install Golang binary if found in BINTARGETS
 if echo $BINTARGETS | grep -q `uname -m`; then
@@ -55,6 +55,8 @@ else
    ./make.bash
    apt-get -y remove golang-1.6
 fi
+
+go get github.com/go-delve/delve/cmd/dlv
 
 PATH=$GOROOT/bin:$GOPATH/bin:$PATH
 
