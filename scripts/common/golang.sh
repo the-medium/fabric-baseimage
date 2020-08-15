@@ -13,10 +13,6 @@
 set -e
 set -x
 
-# Update the entire system to the latest releases
-apt-get update -qq
-apt-get dist-upgrade -qqy
-
 # install common tools
 COMMON_TOOLS="wget git net-tools netcat-openbsd autoconf automake libtool curl make g++ unzip build-essential"
 #apt-get install -y git net-tools netcat-openbsd
@@ -65,57 +61,3 @@ export PATH=\$PATH:$GOROOT/bin:$GOPATH/bin
 EOF
 
 go get github.com/go-delve/delve/cmd/dlv
-
-# ----------------------------------------------------------------
-# Install NodeJS
-# ----------------------------------------------------------------
-NODE_VER=8.16.1
-NPM_VER=6.11.3
-
-ARCH=`uname -m | sed 's|i686|x86|' | sed 's|x86_64|x64|'`
-NODE_PKG=node-v$NODE_VER-linux-$ARCH.tar.gz
-SRC_PATH=/tmp/$NODE_PKG
-
-# First remove any prior packages downloaded in case of failure
-cd /tmp
-rm -f node*.tar.gz
-wget --quiet https://nodejs.org/dist/v$NODE_VER/$NODE_PKG
-cd /usr/local && sudo tar --strip-components 1 -xzf $SRC_PATH
-
-# update npm to latest
-npm install -g npm@$NPM_VER
-
-# Install python2.7
-apt-get -y install python
-
-# ----------------------------------------------------------------
-# Install protocol buffer support
-#
-# See https://github.com/google/protobuf
-# ----------------------------------------------------------------
-PROTOBUF_VER=3.1.0
-PROTOBUF_PKG=v$PROTOBUF_VER.tar.gz
-
-cd /tmp
-wget --quiet https://github.com/google/protobuf/archive/$PROTOBUF_PKG
-tar xpzf $PROTOBUF_PKG
-cd protobuf-$PROTOBUF_VER
-./autogen.sh
-# NOTE: By default, the package will be installed to /usr/local. However, on many platforms, /usr/local/lib is not part of LD_LIBRARY_PATH.
-# You can add it, but it may be easier to just install to /usr instead.
-#
-# To do this, invoke configure as follows:
-#
-# ./configure --prefix=/usr
-#
-#./configure
-./configure --prefix=/usr
-
-make
-make check
-make install
-export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
-cd ~/
-
-# Make our versioning persistent
-echo $BASEIMAGE_RELEASE > /etc/hyperledger-baseimage-release

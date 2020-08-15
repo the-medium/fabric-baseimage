@@ -8,5 +8,6 @@ COPY scripts /tmp/scripts
 RUN cd /tmp/scripts && \
     common/init.sh && \
     docker/init.sh && \
+    common/golang.sh && \
     common/cleanup.sh && \
     rm -rf /tmp/scripts
